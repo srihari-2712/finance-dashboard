@@ -1,7 +1,7 @@
 import type { KPICardData, ParsedDataset } from '../types/dashboard';
 
 function toNum(v: unknown): number | null {
-  const n = Number(v);
+  const n = Number(String(v).replace(/[$,€£¥%]/g, '').trim());
   return isNaN(n) || v === null || v === '' ? null : n;
 }
 

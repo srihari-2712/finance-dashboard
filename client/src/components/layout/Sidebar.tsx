@@ -41,7 +41,7 @@ export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }:
         </div>
         {!collapsed && (
           <span className="font-semibold text-sm truncate" style={{ color: '#e8edf5' }}>
-            FinanceAI
+            Vantage
           </span>
         )}
       </div>

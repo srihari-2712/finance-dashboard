@@ -6,7 +6,7 @@ if (!process.env.GEMINI_API_KEY) {
 }
 
 const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-2.0-flash';
 const VALID_TYPES = ['line', 'bar', 'scatter', 'pie'];
 
 async function analyzeDataset(columns, rows) {

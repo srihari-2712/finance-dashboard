@@ -6,7 +6,7 @@ interface NavbarProps {
 }
 
 const pageTitles: Record<NavPage, { title: string; subtitle: string }> = {
-  dashboard: { title: 'Dashboard', subtitle: 'AI-powered financial analytics' },
+  dashboard: { title: 'Dashboard', subtitle: 'Vantage · AI financial analytics' },
   upload: { title: 'Upload Data', subtitle: 'Import your financial dataset' },
 };
 

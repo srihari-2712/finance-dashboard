@@ -29,7 +29,8 @@ const TOOLTIP_STYLE = {
 };
 
 function toNumber(v: unknown): number {
-  const n = Number(v);
+  const cleaned = String(v).replace(/[$,€£¥%]/g, '').trim();
+  const n = Number(cleaned);
   return isNaN(n) ? 0 : n;
 }
 
