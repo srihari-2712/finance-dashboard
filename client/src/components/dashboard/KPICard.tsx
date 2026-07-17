@@ -1,13 +1,11 @@
 import type { KPICardData } from '../../types/dashboard';
 
-interface KPICardProps {
-  data: KPICardData;
-}
+interface KPICardProps { data: KPICardData; }
 
 const trendStyles = {
-  up: { color: '#00c896', symbol: '▲' },
-  down: { color: '#ff4d6a', symbol: '▼' },
-  neutral: { color: '#8fa3bf', symbol: '—' },
+  up:      { color: 'var(--accent-green)',  symbol: '▲' },
+  down:    { color: 'var(--accent-red)',    symbol: '▼' },
+  neutral: { color: 'var(--text-muted)',    symbol: '—' },
 };
 
 export default function KPICard({ data }: KPICardProps) {
@@ -16,37 +14,41 @@ export default function KPICard({ data }: KPICardProps) {
 
   return (
     <div
-      className="rounded-xl p-5 flex flex-col gap-3 transition-colors duration-200"
+      className="card-hover"
       style={{
-        backgroundColor: '#131c2e',
-        border: '1px solid #1e2d47',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: '12px',
+        padding: '18px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        transition: 'background 0.2s ease, border-color 0.2s ease',
       }}
     >
-      <p className="text-xs font-medium uppercase tracking-widest" style={{ color: '#4a6080' }}>
+      <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', margin: 0 }}>
         {label}
       </p>
 
-      <div className="flex items-end justify-between gap-2">
-        <span className="text-2xl font-semibold leading-none" style={{ color: '#e8edf5', fontFamily: "'JetBrains Mono', monospace" }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
+        <span style={{ fontSize: '22px', fontWeight: 600, lineHeight: 1, color: 'var(--text-primary)', fontFamily: "'JetBrains Mono', monospace" }}>
           {value}
         </span>
-        <span
-          className="flex items-center gap-1 text-xs font-medium rounded-full px-2 py-0.5 mb-0.5"
-          style={{
-            color,
-            backgroundColor: `${color}18`,
-            border: `1px solid ${color}30`,
-          }}
-        >
-          <span className="text-[10px]">{symbol}</span>
+        <span style={{
+          display: 'flex', alignItems: 'center', gap: '3px',
+          fontSize: '11px', fontWeight: 500,
+          padding: '3px 8px', borderRadius: '20px',
+          color, background: `color-mix(in srgb, ${color} 12%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+          whiteSpace: 'nowrap',
+        }}>
+          <span style={{ fontSize: '9px' }}>{symbol}</span>
           {change}
         </span>
       </div>
 
       {subLabel && (
-        <p className="text-xs" style={{ color: '#4a6080' }}>
-          {subLabel}
-        </p>
+        <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>{subLabel}</p>
       )}
     </div>
   );

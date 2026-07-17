@@ -3,45 +3,60 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  --color-bg-primary: #0a0e1a;
-  --color-bg-secondary: #0f1629;
-  --color-bg-card: #131c2e;
-  --color-bg-card-hover: #1a2540;
-  --color-border: #1e2d47;
-  --color-border-bright: #2a3f5f;
-
-  --color-accent-blue: #2d7dd2;
-  --color-accent-blue-bright: #4a9eff;
-  --color-accent-green: #00c896;
-  --color-accent-red: #ff4d6a;
-  --color-accent-yellow: #f5a623;
-  --color-accent-purple: #8b5cf6;
-
-  --color-text-primary: #e8edf5;
-  --color-text-secondary: #8fa3bf;
-  --color-text-muted: #4a6080;
 }
 
-:root {
-  --bg: #0a0e1a;
-  --surface: #131c2e;
-  --surface-alt: #0f1629;
-  --border: #1e2d47;
-  --border-bright: #2a3f5f;
-  --text-primary: #e8edf5;
+/* ── Dark theme (default) ───────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --bg:             #080c18;
+  --surface:        #0f1624;
+  --surface-alt:    #0a0f1c;
+  --surface-raised: #192035;
+  --border:         #1e2d47;
+  --border-bright:  #2a3f5f;
+  --shadow:         #00000066;
+
+  --text-primary:   #eef1f8;
   --text-secondary: #8fa3bf;
-  --text-muted: #4a6080;
-  --accent: #4a9eff;
-  --accent-green: #00c896;
-  --accent-red: #ff4d6a;
-  --accent-yellow: #f5a623;
-  --accent-purple: #8b5cf6;
+  --text-muted:     #4a6080;
+
+  --accent:         #4a9eff;
+  --accent-subtle:  #4a9eff18;
+  --accent-green:   #00c896;
+  --accent-red:     #ff4d6a;
+  --accent-yellow:  #f5a623;
+  --accent-purple:  #8b5cf6;
+
+  --skeleton-base:  #0f1624;
+  --skeleton-shine: #192035;
 }
 
-* {
-  box-sizing: border-box;
+/* ── Light theme ────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:             #f0f4fa;
+  --surface:        #ffffff;
+  --surface-alt:    #f5f8fc;
+  --surface-raised: #e8eef7;
+  --border:         #dce4f0;
+  --border-bright:  #c4d0e4;
+  --shadow:         #0000001a;
+
+  --text-primary:   #0d1526;
+  --text-secondary: #3d5070;
+  --text-muted:     #7a90aa;
+
+  --accent:         #2563eb;
+  --accent-subtle:  #2563eb18;
+  --accent-green:   #059669;
+  --accent-red:     #dc2626;
+  --accent-yellow:  #d97706;
+  --accent-purple:  #7c3aed;
+
+  --skeleton-base:  #e8eef7;
+  --skeleton-shine: #f5f8fc;
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -50,6 +65,7 @@ body {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root {
@@ -59,69 +75,54 @@ body {
   text-align: left;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--surface-alt); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
 
-/* Skeleton loader */
+/* ── Skeleton ───────────────────────────────────────────── */
 @keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #131c2e 25%, #1a2540 50%, #131c2e 75%);
-  background-size: 800px 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base)  25%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base)  75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 4px;
 }
 
-/* Fade + slide up */
+/* ── Animations ─────────────────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.fade-slide-up { animation: fadeSlideUp 0.25s ease forwards; }
 
-.fade-slide-up {
-  animation: fadeSlideUp 0.3s ease forwards;
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.85s linear infinite; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+  40%           { transform: translateY(-5px); opacity: 1; }
 }
-
-/* Typing indicator dots */
 .typing-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--text-muted);
   animation: typingBounce 1.2s ease-in-out infinite;
 }
 
-@keyframes typingBounce {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-  40% { transform: translateY(-5px); opacity: 1; }
-}
-
-/* Spin */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.spin {
-  animation: spin 0.9s linear infinite;
-}
-
-/* Pulse glow */
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-/* Card hover lift */
-.card-hover {
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
+/* ── Card hover ─────────────────────────────────────────── */
+.card-hover { transition: transform 0.18s ease, box-shadow 0.18s ease; }
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px #00000055;
+  box-shadow: 0 8px 28px var(--shadow);
 }

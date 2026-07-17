@@ -38,8 +38,14 @@ function fmt(n: number, decimals = 2): string {
   return n.toFixed(decimals);
 }
 
-/** Pick the best numeric column to compute KPIs on (prefer "close", "price", "value", "revenue", etc.) */
-function pickPrimaryColumn(dataset: ParsedDataset): string | null {
+export function getNumericColumns(dataset: ParsedDataset): string[] {
+  return dataset.columns.filter((col) => {
+    const vals = numericValues(dataset.rows, col);
+    return vals.length > dataset.rows.length * 0.5;
+  });
+}
+
+export function pickPrimaryColumn(dataset: ParsedDataset): string | null {
   const preferred = ['close', 'price', 'value', 'revenue', 'amount', 'total', 'sales', 'return'];
   const lower = dataset.columns.map((c) => c.toLowerCase());
   const match = preferred.find((k) => lower.some((c) => c.includes(k)));
@@ -47,40 +53,35 @@ function pickPrimaryColumn(dataset: ParsedDataset): string | null {
     const idx = lower.findIndex((c) => c.includes(match));
     return dataset.columns[idx];
   }
-  // Fall back to first column with >50% numeric values
-  for (const col of dataset.columns) {
-    const vals = numericValues(dataset.rows, col);
-    if (vals.length > dataset.rows.length * 0.5) return col;
-  }
-  return null;
+  return getNumericColumns(dataset)[0] ?? null;
 }
 
-export function computeKPIs(dataset: ParsedDataset): KPICardData[] {
-  const col = pickPrimaryColumn(dataset);
+export function computeKPIs(dataset: ParsedDataset, col?: string): KPICardData[] {
+  const column = col ?? pickPrimaryColumn(dataset);
 
-  if (!col) {
+  if (!column) {
     return [
-      { id: 'kpi-1', label: 'Rows', value: String(dataset.rowCount), change: '—', trend: 'neutral' },
-      { id: 'kpi-2', label: 'Columns', value: String(dataset.columns.length), change: '—', trend: 'neutral' },
-      { id: 'kpi-3', label: 'Format', value: dataset.fileType.toUpperCase(), change: '—', trend: 'neutral' },
-      { id: 'kpi-4', label: 'Status', value: 'Loaded', change: '—', trend: 'neutral' },
+      { id: 'kpi-1', label: 'Rows',    value: String(dataset.rowCount),        change: '—', trend: 'neutral' },
+      { id: 'kpi-2', label: 'Columns', value: String(dataset.columns.length),  change: '—', trend: 'neutral' },
+      { id: 'kpi-3', label: 'Format',  value: dataset.fileType.toUpperCase(),  change: '—', trend: 'neutral' },
+      { id: 'kpi-4', label: 'Status',  value: 'Loaded',                        change: '—', trend: 'neutral' },
     ];
   }
 
-  const vals = numericValues(dataset.rows, col);
+  const vals = numericValues(dataset.rows, column);
   if (vals.length === 0) return [];
 
-  const avg = mean(vals);
-  const min = Math.min(...vals);
-  const max = Math.max(...vals);
-  const med = median(vals);
-  const sd = stddev(vals);
+  const avg    = mean(vals);
+  const min    = Math.min(...vals);
+  const max    = Math.max(...vals);
+  const med    = median(vals);
+  const sd     = stddev(vals);
   const growth = growthPercent(vals);
 
   return [
     {
       id: 'kpi-avg',
-      label: `Avg ${col}`,
+      label: `Avg ${column}`,
       value: fmt(avg),
       change: `σ ${fmt(sd, 2)}`,
       trend: 'neutral',
@@ -88,11 +89,11 @@ export function computeKPIs(dataset: ParsedDataset): KPICardData[] {
     },
     {
       id: 'kpi-range',
-      label: `${col} Range`,
+      label: `${column} Range`,
       value: `${fmt(min)} – ${fmt(max)}`,
       change: `Δ ${fmt(max - min)}`,
       trend: 'neutral',
-      subLabel: `Min / Max`,
+      subLabel: 'Min / Max',
     },
     {
       id: 'kpi-stddev',
@@ -108,7 +109,7 @@ export function computeKPIs(dataset: ParsedDataset): KPICardData[] {
       value: growth !== null ? `${growth >= 0 ? '+' : ''}${growth.toFixed(2)}%` : '—',
       change: growth !== null ? `${fmt(vals[0])} → ${fmt(vals[vals.length - 1])}` : 'Insufficient data',
       trend: growth === null ? 'neutral' : growth > 0 ? 'up' : 'down',
-      subLabel: `First → Last (${col})`,
+      subLabel: `First → Last (${column})`,
     },
   ];
 }

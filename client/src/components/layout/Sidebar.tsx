@@ -8,74 +8,90 @@ interface SidebarProps {
 }
 
 const navItems: { id: NavPage; label: string; icon: string }[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '▦' },
-  { id: 'upload', label: 'Upload Data', icon: '⬆' },
+  { id: 'dashboard', label: 'Dashboard',   icon: '▦' },
+  { id: 'upload',    label: 'Upload Data', icon: '⬆' },
 ];
 
 export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }: SidebarProps) {
   return (
-    <aside
-      className="flex flex-col shrink-0 transition-all duration-300 ease-in-out"
-      style={{
-        width: collapsed ? '64px' : '220px',
-        backgroundColor: '#0f1629',
-        borderRight: '1px solid #1e2d47',
-        minHeight: '100svh',
-      }}
-    >
+    <aside style={{
+      width: collapsed ? '60px' : '210px',
+      flexShrink: 0,
+      backgroundColor: 'var(--surface)',
+      borderRight: '1px solid var(--border)',
+      minHeight: '100svh',
+      display: 'flex',
+      flexDirection: 'column',
+      transition: 'width 0.25s ease, background-color 0.2s ease',
+    }}>
       {/* Logo */}
-      <div
-        className="flex items-center gap-3 px-4 py-5"
-        style={{ borderBottom: '1px solid #1e2d47', height: '64px' }}
-      >
-        <div
-          className="shrink-0 flex items-center justify-center rounded"
-          style={{
-            width: '32px',
-            height: '32px',
-            background: 'linear-gradient(135deg, #2d7dd2 0%, #8b5cf6 100%)',
-            fontSize: '14px',
-          }}
-        >
-          ◈
-        </div>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '10px',
+        padding: collapsed ? '0 14px' : '0 16px',
+        height: '60px',
+        borderBottom: '1px solid var(--border)',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          width: '28px', height: '28px', flexShrink: 0,
+          background: 'linear-gradient(135deg, #1a3a6a 0%, #8b5cf6 100%)',
+          borderRadius: '7px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '13px',
+        }}>◈</div>
         {!collapsed && (
-          <span className="font-semibold text-sm truncate" style={{ color: '#e8edf5' }}>
+          <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
             Vantage
           </span>
         )}
       </div>
 
-      {/* Nav items */}
-      <nav className="flex-1 flex flex-col gap-1 p-2 pt-4">
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {navItems.map((item) => {
           const isActive = activePage === item.id;
           return (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 w-full text-left cursor-pointer"
-              style={{
-                backgroundColor: isActive ? '#1a2f52' : 'transparent',
-                color: isActive ? '#4a9eff' : '#8fa3bf',
-                border: isActive ? '1px solid #2a3f5f' : '1px solid transparent',
-              }}
               title={collapsed ? item.label : undefined}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                padding: collapsed ? '9px 0' : '9px 12px',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                borderRadius: '8px',
+                border: 'none',
+                width: '100%',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: isActive ? 600 : 400,
+                background: isActive ? 'var(--accent-subtle)' : 'transparent',
+                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'var(--surface-alt)'; }}
+              onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
             >
-              <span className="shrink-0 text-base leading-none">{item.icon}</span>
-              {!collapsed && <span className="truncate">{item.label}</span>}
+              <span style={{ fontSize: '14px', flexShrink: 0 }}>{item.icon}</span>
+              {!collapsed && <span>{item.label}</span>}
             </button>
           );
         })}
       </nav>
 
       {/* Collapse toggle */}
-      <div className="p-2" style={{ borderTop: '1px solid #1e2d47' }}>
+      <div style={{ padding: '8px', borderTop: '1px solid var(--border)' }}>
         <button
           onClick={onToggle}
-          className="flex items-center justify-center w-full rounded-md py-2 text-sm transition-colors duration-150 cursor-pointer"
-          style={{ color: '#4a6080' }}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand' : 'Collapse'}
+          style={{
+            width: '100%', padding: '8px', borderRadius: '8px',
+            border: 'none', background: 'transparent',
+            color: 'var(--text-muted)', cursor: 'pointer', fontSize: '13px',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--surface-alt)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
         >
           {collapsed ? '›' : '‹'}
         </button>
