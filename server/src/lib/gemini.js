@@ -1,17 +1,51 @@
 const { GoogleGenAI } = require('@google/genai');
-const { withRetry } = require('./retry');
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error('GEMINI_API_KEY is not set in environment variables.');
 }
 
 const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const MODEL = 'gemini-2.0-flash';
+
+const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
 const VALID_TYPES = ['line', 'bar', 'scatter', 'pie'];
+
+function is429(err) {
+  const msg = err?.message ?? '';
+  return (
+    err?.status === 429 ||
+    msg.includes('429') ||
+    msg.includes('RESOURCE_EXHAUSTED') ||
+    msg.includes('quota')
+  );
+}
+
+async function callWithFallback(promptFn) {
+  let lastErr;
+  for (const model of MODELS) {
+    try {
+      console.log(`[gemini] trying ${model}`);
+      const response = await genai.models.generateContent({
+        model,
+        contents: promptFn(),
+      });
+      console.log(`[gemini] success with ${model}`);
+      return response.text.trim();
+    } catch (err) {
+      if (is429(err)) {
+        console.warn(`[gemini] ${model} quota exhausted, trying next model…`);
+        lastErr = err;
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error(`All Gemini models exhausted. Last error: ${lastErr?.message}`);
+}
 
 async function analyzeDataset(columns, rows) {
   const sample = rows.slice(0, 5);
-  const prompt = `You are a financial data analyst.
+
+  const text = await callWithFallback(() => `You are a financial data analyst.
 
 Dataset columns: ${JSON.stringify(columns)}
 Sample rows (first 5): ${JSON.stringify(sample, null, 2)}
@@ -31,29 +65,22 @@ Return ONLY valid JSON — no markdown, no code fences, no explanation:
   "charts": [
     { "type": "line"|"bar"|"scatter"|"pie", "title": "<short title>", "x": "<column>", "y": "<column>" }
   ]
-}`;
+}`);
 
-  const response = await withRetry(() =>
-    genai.models.generateContent({ model: MODEL, contents: prompt })
-  );
-  return parseAnalysis(response.text.trim(), columns);
+  return parseAnalysis(text, columns);
 }
 
 async function generateChatAnswer(question, columns, rows) {
   const sample = rows.slice(0, 20);
-  const prompt = `You are a financial analyst assistant. Answer questions about the dataset below.
+
+  return callWithFallback(() => `You are a financial analyst assistant. Answer questions about the dataset below.
 
 Dataset columns: ${JSON.stringify(columns)}
 Data (first 20 rows): ${JSON.stringify(sample, null, 2)}
 
 Question: ${question}
 
-Answer in 2–4 concise sentences. Be specific — reference actual column names and values where relevant. If the question cannot be answered from the data, say so clearly.`;
-
-  const response = await withRetry(() =>
-    genai.models.generateContent({ model: MODEL, contents: prompt })
-  );
-  return response.text.trim();
+Answer in 2–4 concise sentences. Be specific — reference actual column names and values where relevant. If the question cannot be answered from the data, say so clearly.`);
 }
 
 function parseAnalysis(raw, columns) {
