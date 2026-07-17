@@ -114,13 +114,14 @@ export default function ChatPanel({ dataset }: ChatPanelProps) {
               fontSize: '13px',
               lineHeight: '1.55',
               background:
-                msg.role === 'user' ? 'linear-gradient(135deg, #1a3a6a, #1e2d55)' :
-                msg.role === 'error' ? '#2a0f17' : 'var(--surface-alt)',
+                msg.role === 'user' ? 'var(--accent)' :
+                msg.role === 'error' ? 'color-mix(in srgb, var(--accent-red) 12%, var(--surface-alt))' : 'var(--surface-alt)',
               border:
-                msg.role === 'user' ? '1px solid #2a5298' :
-                msg.role === 'error' ? '1px solid #ff4d6a44' : '1px solid var(--border)',
+                msg.role === 'user' ? '1px solid var(--accent)' :
+                msg.role === 'error' ? '1px solid color-mix(in srgb, var(--accent-red) 30%, transparent)' : '1px solid var(--border)',
               color:
-                msg.role === 'error' ? '#ff6b85' : 'var(--text-primary)',
+                msg.role === 'user' ? '#ffffff' :
+                msg.role === 'error' ? 'var(--accent-red)' : 'var(--text-primary)',
             }}>
               {msg.role === 'error' && <span style={{ marginRight: '6px' }}>⚠</span>}
               {msg.text}
@@ -168,8 +169,8 @@ export default function ChatPanel({ dataset }: ChatPanelProps) {
                 transition: 'all 0.15s',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#4a9eff55';
-                (e.currentTarget as HTMLButtonElement).style.color = '#4a9eff';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--accent)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--accent)';
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)';
@@ -206,7 +207,7 @@ export default function ChatPanel({ dataset }: ChatPanelProps) {
             outline: 'none',
             transition: 'border-color 0.15s',
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = '#4a9eff55')}
+          onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--accent)')}
           onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
         />
         <button
@@ -214,9 +215,9 @@ export default function ChatPanel({ dataset }: ChatPanelProps) {
           disabled={!dataset || loading || !input.trim()}
           style={{
             width: '38px', height: '38px',
-            background: input.trim() && dataset ? 'linear-gradient(135deg, #1a3a6a, #2a5298)' : 'var(--surface-alt)',
+            background: input.trim() && dataset ? 'var(--accent)' : 'var(--surface-alt)',
             border: '1px solid',
-            borderColor: input.trim() && dataset ? '#2a5298' : 'var(--border)',
+            borderColor: input.trim() && dataset ? 'var(--accent)' : 'var(--border)',
             borderRadius: '10px',
             cursor: input.trim() && dataset ? 'pointer' : 'not-allowed',
             fontSize: '16px',

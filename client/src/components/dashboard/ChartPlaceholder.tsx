@@ -3,106 +3,35 @@ interface ChartPlaceholderProps {
   height?: number;
 }
 
-export default function ChartPlaceholder({
-  title = 'Chart',
-  height = 320,
-}: ChartPlaceholderProps) {
+export default function ChartPlaceholder({ title = 'Chart', height = 320 }: ChartPlaceholderProps) {
   return (
-    <div
-      className="rounded-xl flex flex-col"
-      style={{
-        backgroundColor: '#131c2e',
-        border: '1px solid #1e2d47',
-      }}
-    >
-      {/* Card header */}
-      <div
-        className="flex items-center justify-between px-5 py-4"
-        style={{ borderBottom: '1px solid #1e2d47' }}
-      >
-        <div className="flex items-center gap-2">
-          <div
-            className="rounded"
-            style={{ width: '3px', height: '16px', backgroundColor: '#2d7dd2' }}
-          />
-          <span className="text-sm font-semibold" style={{ color: '#e8edf5' }}>
-            {title}
-          </span>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ width: '3px', height: '16px', borderRadius: '2px', backgroundColor: 'var(--accent)' }} />
+          <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{title}</span>
         </div>
-        <span
-          className="text-xs px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: '#1a2540', color: '#4a6080', border: '1px solid #1e2d47' }}
-        >
+        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'var(--surface-alt)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
           Awaiting data
         </span>
       </div>
 
-      {/* Placeholder body */}
-      <div
-        className="flex flex-col items-center justify-center gap-4 relative overflow-hidden"
-        style={{ height }}
-      >
-        {/* Decorative grid lines */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-10"
-          preserveAspectRatio="none"
-        >
-          {[0.2, 0.4, 0.6, 0.8].map((y) => (
-            <line
-              key={y}
-              x1="0"
-              y1={`${y * 100}%`}
-              x2="100%"
-              y2={`${y * 100}%`}
-              stroke="#2a3f5f"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-            />
+      <div style={{ height, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', position: 'relative', overflow: 'hidden' }}>
+        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.06 }} preserveAspectRatio="none">
+          {[0.25, 0.5, 0.75].map((y) => (
+            <line key={y} x1="0" y1={`${y * 100}%`} x2="100%" y2={`${y * 100}%`} stroke="var(--border-bright)" strokeWidth="1" strokeDasharray="4 4" />
           ))}
-          {[0.2, 0.4, 0.6, 0.8].map((x) => (
-            <line
-              key={x}
-              x1={`${x * 100}%`}
-              y1="0"
-              x2={`${x * 100}%`}
-              y2="100%"
-              stroke="#2a3f5f"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-            />
+          {[0.25, 0.5, 0.75].map((x) => (
+            <line key={x} x1={`${x * 100}%`} y1="0" x2={`${x * 100}%`} y2="100%" stroke="var(--border-bright)" strokeWidth="1" strokeDasharray="4 4" />
           ))}
         </svg>
 
-        {/* Decorative fake chart silhouette */}
-        <svg className="absolute inset-0 w-full h-full opacity-5" preserveAspectRatio="none">
-          <polyline
-            points="0,80% 15%,65% 30%,70% 45%,40% 60%,50% 75%,30% 90%,35% 100%,20%"
-            fill="none"
-            stroke="#4a9eff"
-            strokeWidth="2"
-          />
-        </svg>
-
-        {/* Content */}
-        <div
-          className="relative flex items-center justify-center rounded-full"
-          style={{
-            width: '52px',
-            height: '52px',
-            backgroundColor: '#0f1629',
-            border: '1px solid #1e2d47',
-            fontSize: '22px',
-          }}
-        >
+        <div style={{ position: 'relative', width: '44px', height: '44px', borderRadius: '50%', background: 'var(--surface-alt)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
           📊
         </div>
-        <div className="relative text-center">
-          <p className="text-sm font-medium" style={{ color: '#8fa3bf' }}>
-            No dataset loaded
-          </p>
-          <p className="text-xs mt-1" style={{ color: '#4a6080' }}>
-            Upload a CSV or JSON file to generate charts
-          </p>
+        <div style={{ position: 'relative', textAlign: 'center' }}>
+          <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', margin: 0 }}>No dataset loaded</p>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>Upload a CSV or JSON file to generate charts</p>
         </div>
       </div>
     </div>

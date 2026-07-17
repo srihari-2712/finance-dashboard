@@ -32,13 +32,21 @@ export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }:
         borderBottom: '1px solid var(--border)',
         overflow: 'hidden',
       }}>
-        <div style={{
-          width: '28px', height: '28px', flexShrink: 0,
-          background: 'linear-gradient(135deg, #1a3a6a 0%, #8b5cf6 100%)',
-          borderRadius: '7px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '13px',
-        }}>◈</div>
+        <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, borderRadius: '7px' }}>
+          <defs>
+            <linearGradient id="sbg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#1a3a6a"/>
+              <stop offset="100%" stopColor="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="url(#sbg)"/>
+          <rect x="5" y="20" width="4" height="7" rx="1" fill="white" opacity="0.5"/>
+          <rect x="11" y="15" width="4" height="12" rx="1" fill="white" opacity="0.7"/>
+          <rect x="17" y="10" width="4" height="17" rx="1" fill="white" opacity="0.9"/>
+          <rect x="23" y="6" width="4" height="21" rx="1" fill="white"/>
+          <polyline points="7,20 13,15 19,10 25,6" fill="none" stroke="#4a9eff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="25" cy="6" r="2" fill="#4a9eff"/>
+        </svg>
         {!collapsed && (
           <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
             Vantage

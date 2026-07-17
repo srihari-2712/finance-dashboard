@@ -26,15 +26,16 @@ export default function DashboardPage({ dataset, summaryState, charts }: Dashboa
   const [selectedCol, setSelectedCol] = useState<string | null>(null);
 
   useEffect(() => {
-    if (dataset) setSelectedCol(pickPrimaryColumn(dataset));
-    else setSelectedCol(null);
+    setSelectedCol(null); // reset to Auto on new dataset
   }, [dataset]);
 
   const numericCols = useMemo(() => (dataset ? getNumericColumns(dataset) : []), [dataset]);
 
+  const resolvedCol = selectedCol ?? (dataset ? pickPrimaryColumn(dataset) : null);
+
   const kpis = useMemo(
-    () => (dataset ? computeKPIs(dataset, selectedCol ?? undefined) : EMPTY_KPIS),
-    [dataset, selectedCol],
+    () => (dataset ? computeKPIs(dataset, resolvedCol ?? undefined) : EMPTY_KPIS),
+    [dataset, resolvedCol],
   );
 
   const isAnalyzing = summaryState.status === 'loading';

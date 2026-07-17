@@ -1,9 +1,8 @@
-import { useTheme, type ThemeMode } from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 
-const OPTIONS: { value: ThemeMode; label: string; icon: string }[] = [
-  { value: 'auto',  label: 'Auto',  icon: '⬡' },
-  { value: 'light', label: 'Light', icon: '☀' },
-  { value: 'dark',  label: 'Dark',  icon: '☾' },
+const OPTIONS = [
+  { value: 'light' as const, label: 'Light', icon: '☀' },
+  { value: 'dark'  as const, label: 'Dark',  icon: '☾' },
 ];
 
 export default function ThemeToggle() {
@@ -11,13 +10,11 @@ export default function ThemeToggle() {
 
   return (
     <div style={{
-      display: 'flex',
-      alignItems: 'center',
+      display: 'flex', alignItems: 'center',
       background: 'var(--surface-alt)',
       border: '1px solid var(--border)',
       borderRadius: '10px',
-      padding: '3px',
-      gap: '2px',
+      padding: '3px', gap: '2px',
     }}>
       {OPTIONS.map((opt) => {
         const active = mode === opt.value;
@@ -27,14 +24,9 @@ export default function ThemeToggle() {
             onClick={() => setMode(opt.value)}
             title={opt.label}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '4px 9px',
-              borderRadius: '7px',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '11px',
+              display: 'flex', alignItems: 'center', gap: '4px',
+              padding: '4px 10px', borderRadius: '7px', border: 'none',
+              cursor: 'pointer', fontSize: '11px',
               fontWeight: active ? 600 : 400,
               transition: 'all 0.15s',
               background: active ? 'var(--surface-raised)' : 'transparent',
